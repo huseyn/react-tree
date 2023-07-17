@@ -1,0 +1,38 @@
+/* TreeComponent.scss */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap");
+
+$lineColor: #999;
+$lineWidth: 1px;
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.tree-node {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.tree-node-text {
+  margin-left: 8px;
+}
+
+.vertical-line {
+  border-left: $lineWidth solid $lineColor;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 5px;
+}
+
+.horizontal-line {
+  border-top: $lineWidth solid $lineColor;
+  width: 100%;
+  margin-left: 20px;
+}
+
+.child-container {
+  margin-left: 20px;
+}
