@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
+import { TextBox } from "devextreme-react/text-box";
 import styled from "styled-components";
 
 const NodeBoxContainer = styled.div`
@@ -57,6 +58,7 @@ const Title = styled.span`
   font-style: normal;
   font-weight: 700;
   line-height: 16px;
+  cursor: pointer;
 
   &:before {
     content: "+";
@@ -73,6 +75,17 @@ const Title = styled.span`
 `;
 
 const NodeBox = ({ nodeItem }) => {
+  const [value, setValue] = useState("");
+  const [editable, setEditable] = useState(false);
+
+  const onValueChange = useCallback((v) => {
+    setValue(v);
+  }, []);
+
+  const onEnterKey = useCallback(() => {
+    console.log(value);
+  }, [value]);
+
   return nodeItem.parentId ? (
     <NodeBoxContainer>
       <NodeBoxContent>
@@ -82,13 +95,23 @@ const NodeBox = ({ nodeItem }) => {
           ))}
         </DragIcon>
         <NodeBoxInfo>
-          <span className="box-title">{nodeItem.name}</span>
+          <TextBox
+            value={value}
+            valueChangeEvent="input"
+            onValueChange={onValueChange}
+            onEnterKey={onEnterKey}
+          />
+          (<span className="box-title">{nodeItem.name}</span>)
         </NodeBoxInfo>
       </NodeBoxContent>
-      {nodeItem.childParentName && <Title>{nodeItem.childParentName}</Title>}
+      {nodeItem.childParentName && (
+        <Title onClick={() => console.log(nodeItem)}>
+          {nodeItem.childParentName}
+        </Title>
+      )}
     </NodeBoxContainer>
   ) : (
-    <Title>{nodeItem.name}</Title>
+    <Title onClick={() => console.log(nodeItem)}>{nodeItem.name}</Title>
   );
 };
 
