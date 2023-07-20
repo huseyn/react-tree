@@ -4,8 +4,6 @@ import TreeView from "devextreme-react/tree-view";
 import Sortable from "devextreme-react/sortable";
 import NodeBox from "./node-box/node-box.jsx";
 
-import getGoalsList from "./data.js";
-
 const StyledSortable = styled(Sortable)`
   * {
     list-style: none;
@@ -19,43 +17,6 @@ const StyledSortable = styled(Sortable)`
     width: 100%;
     padding: 15px;
   }
-
-  .dx-treeview-node.dx-treeview-item-without-checkbox {
-    .dx-item.dx-treeview-item {
-      position: relative;
-
-      .dx-item-content.dx-treeview-item-content:before {
-        content: "";
-        position: absolute;
-        top: 33px;
-        left: -9px;
-        background-color: #0f4c75;
-        height: 6px;
-        width: 6px;
-        border-radius: 50%;
-      }
-    }
-    .dx-item.dx-treeview-item:before,
-    .dx-item.dx-treeview-item:after {
-      content: "";
-      position: absolute;
-      left: -48px;
-      background-color: #0f4c75;
-    }
-
-    .dx-item.dx-treeview-item:before {
-      height: 1px;
-      width: 40px;
-      top: 35px;
-    }
-
-    .dx-item.dx-treeview-item:after {
-      height: 53px;
-      width: 1px;
-      bottom: 52px;
-      z-index: -1;
-    }
-  }
 `;
 
 const App = () => {
@@ -63,69 +24,88 @@ const App = () => {
 
   const [goalsList, setGoalsList] = useState([
     {
-      id: 1,
-      name: "Goals (2)",
+      id: "1",
+      name: "Goals",
       icon: "activefolder",
       isDirectory: true,
       expanded: true,
+      editable: false,
+      childrenCount: 2,
+      prevChildrenCount: 0,
     },
     {
-      id: 2,
-      parentId: 1,
+      id: "2",
+      parentId: "1",
       name: "1. Goal",
-      childParentName: "Focus Area (2)",
+      childParentName: "Focus Area",
       icon: "activefolder",
       isDirectory: true,
       expanded: true,
+      editable: false,
+      childrenCount: 2,
+      prevChildrenCount: 0,
     },
     {
-      id: 3,
-      parentId: 2,
+      id: "3",
+      parentId: "2",
       name: "1.1 Focus Area",
       icon: "file",
       isDirectory: false,
       expanded: true,
+      editable: false,
+      prevChildrenCount: 0,
     },
     {
-      id: 4,
-      parentId: 2,
+      id: "4",
+      parentId: "2",
       name: "1.2 Focus Area",
       icon: "file",
       isDirectory: false,
       expanded: true,
+      editable: false,
+      prevChildrenCount: 0,
     },
     {
-      id: 5,
-      parentId: 1,
+      id: "5",
+      parentId: "1",
       name: "2. Goal",
-      childParentName: "Focus Area (3)",
+      childParentName: "Focus Area",
       icon: "file",
       isDirectory: false,
       expanded: true,
+      editable: false,
+      childrenCount: 3,
+      prevChildrenCount: 2,
     },
     {
-      id: 6,
-      parentId: 5,
+      id: "6",
+      parentId: "5",
       name: "2.1 Focus Area",
       icon: "file",
       isDirectory: false,
       expanded: true,
+      editable: false,
+      prevChildrenCount: 0,
     },
     {
-      id: 7,
-      parentId: 5,
+      id: "7",
+      parentId: "5",
       name: "2.2 Focus Area",
       icon: "file",
       isDirectory: false,
       expanded: true,
+      editable: false,
+      prevChildrenCount: 0,
     },
     {
-      id: 8,
-      parentId: 5,
+      id: "8",
+      parentId: "5",
       name: "2.3 Focus Area",
       icon: "activefolder",
       isDirectory: true,
       expanded: true,
+      editable: false,
+      prevChildrenCount: 0,
     },
   ]);
 
@@ -148,6 +128,7 @@ const App = () => {
   }, []);
 
   const renderTreeViewItem = (item) => {
+    console.log("item", item);
     return <NodeBox add={addNewNode} nodeItem={item} />;
   };
 

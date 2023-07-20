@@ -5,6 +5,7 @@ import styled from "styled-components";
 const NodeBoxContainer = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const NodeBoxContent = styled.div`
@@ -13,6 +14,28 @@ const NodeBoxContent = styled.div`
   min-height: 72px;
   background-color: #f2f2f2;
   margin-bottom: 16px;
+  position: relative;
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    left: -48px;
+    background-color: #0f4c75;
+  }
+
+  &:before {
+    height: 1px;
+    width: 40px;
+    top: 35px;
+  }
+
+  &:after {
+    height: ${(props) => (props.prevChildrenCount + 1) * 130}px;
+    width: 1px;
+    bottom: 37px;
+    z-index: -1;
+  }
 `;
 
 const DragIcon = styled.div`
@@ -25,6 +48,17 @@ const DragIcon = styled.div`
   background-color: #1b90fd;
   position: relative;
   cursor: pointer;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 33px;
+    left: -9px;
+    background-color: #0f4c75;
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+  }
 
   span {
     display: inline-block;
@@ -91,7 +125,7 @@ const NodeBox = ({ nodeItem, add }) => {
 
   return nodeItem.parentId ? (
     <NodeBoxContainer>
-      <NodeBoxContent>
+      <NodeBoxContent prevChildrenCount={nodeItem.prevChildrenCount}>
         <DragIcon>
           {[1, 2, 3, 4, 5].map((dot) => (
             <span key={dot} />
@@ -112,12 +146,14 @@ const NodeBox = ({ nodeItem, add }) => {
       </NodeBoxContent>
       {nodeItem.childParentName && (
         <Title onClick={handleAddClick}>{`${nodeItem.childParentName} ${
-          nodeItem.childrenCount ? (nodeItem.childrenCount) : ""
+          nodeItem.childrenCount ? nodeItem.childrenCount : ""
         }`}</Title>
       )}
     </NodeBoxContainer>
   ) : (
-    <Title onClick={handleAddClick}>{nodeItem.name}</Title>
+    <Title onClick={handleAddClick}>{`${nodeItem.name} ${
+      nodeItem.childrenCount ? nodeItem.childrenCount : ""
+    }`}</Title>
   );
 };
 
