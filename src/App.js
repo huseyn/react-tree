@@ -6,7 +6,7 @@ const App = () => {
     {
       id: 1,
       description: {
-        label: "Goals (2)",
+        label: "Goals",
         text: "",
       },
       childLabel: "",
@@ -18,7 +18,7 @@ const App = () => {
             label: "1. Goal",
             text: "Improve Access to Government Services and Information",
           },
-          childLabel: "Focus Area (2)",
+          childLabel: "Focus Area",
           level: 2,
           children: [
             {
@@ -31,9 +31,36 @@ const App = () => {
               level: 3,
             },
             {
-              id: 58,
+              id: 44,
               description: {
                 label: "1.2 Focus area",
+                text: "Improve Access to Government Services and Information",
+              },
+              childLabel: "",
+              level: 3,
+            },
+            {
+              id: 434,
+              description: {
+                label: "1.3 Focus area",
+                text: "Improve Access to Government Services and Information",
+              },
+              childLabel: "",
+              level: 3,
+            },
+            {
+              id: 448,
+              description: {
+                label: "1.4 Focus area",
+                text: "Improve Access to Government Services and Information",
+              },
+              childLabel: "",
+              level: 3,
+            },
+            {
+              id: 58,
+              description: {
+                label: "1.5 Focus area",
                 text: "Improve Access to Government Services and Information",
               },
               childLabel: "",
@@ -49,35 +76,7 @@ const App = () => {
           },
           childLabel: "Focus Area (3)",
           level: 2,
-          children: [
-            {
-              id: 44,
-              description: {
-                label: "2.1 Focus area",
-                text: "Improve Access to Government Services and Information",
-              },
-              childLabel: "",
-              level: 3,
-            },
-            {
-              id: 87,
-              description: {
-                label: "2.2 Focus area",
-                text: "Improve Access to Government Services and Information",
-              },
-              childLabel: "",
-              level: 3,
-            },
-            {
-              id: 55,
-              description: {
-                label: "2.3 Focus area",
-                text: "Improve Access to Government Services and Information",
-              },
-              childLabel: "",
-              level: 3,
-            },
-          ],
+          children: [],
         },
       ],
     },

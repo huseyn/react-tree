@@ -1,0 +1,33 @@
+* {
+  list-style: none;
+}
+
+li {
+  padding: 10px;
+}
+
+.dx-treeview-node.dx-treeview-item-without-checkbox {
+  .dx-item.dx-treeview-item {
+    position: relative;
+  }
+  .dx-item.dx-treeview-item:before,
+  .dx-item.dx-treeview-item:after {
+    content: "";
+    position: absolute;
+    left: -30px;
+    background-color: #0f4c75;
+  }
+
+  .dx-item.dx-treeview-item:before {
+    height: 1px;
+    width: 22px;
+    top: 10px;
+  }
+
+  .dx-item.dx-treeview-item:after {
+    height: 20px;
+    width: 1px;
+    bottom: 9px;
+    z-index: -1;
+  }
+}

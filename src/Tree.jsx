@@ -2,6 +2,19 @@ import React from "react";
 import styled from "styled-components";
 import { Levels } from "./constants";
 
+const calculateTotalHeight = (node) => {
+  if (!node || !node.children || node.children.length === 0) {
+    return 91;
+  }
+
+  let totalHeight = 91;
+
+  for (const child of node.children) {
+    totalHeight += calculateTotalHeight(child);
+  }
+  return totalHeight;
+};
+
 const TreeWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -37,6 +50,28 @@ const TreeNodeDescription = styled.div`
   width: 1063px;
   height: 72px;
   background-color: #f2f2f2;
+  position: relative;
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    left: -33px;
+    background-color: #0f4c75;
+  }
+
+  &:before {
+    height: 1px;
+    width: 22px;
+    top: 33px;
+  }
+
+  &:after {
+    height: ${(props) => calculateTotalHeight(props.node) + "px"};
+    width: 1px;
+    bottom: 38px;
+    z-index: -1;
+  }
 
   .description__left-border {
     display: flex;
@@ -47,6 +82,18 @@ const TreeNodeDescription = styled.div`
     height: 100%;
     background-color: #1c90fd;
     margin-right: 20px;
+    cursor: pointer;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 31px;
+      left: -15px;
+      background-color: #0f4c75;
+      height: 6px;
+      width: 6px;
+      border-radius: 50%;
+    }
 
     span {
       display: inline-block;
@@ -112,18 +159,18 @@ const TreeNode = ({ node }) => {
               <span className="mr-1">{node.description.label}</span>
             </TreeNodeLabel>
           ) : (
-            <TreeNodeDescription>
+            <TreeNodeDescription className="treenodedescription" node={node}>
               <div className="description__left-border">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
               </div>
               <div className="description__info">
                 <span className="description__info__label">
-                  {node.description.label}
+                  {`${node.description.label} (${node?.children?.length})`}
                 </span>
                 <span>{node.description.text}</span>
               </div>
@@ -272,7 +319,7 @@ const TreeNode = ({ node }) => {
             </TreeNodeDescription>
           )}
           {node.childLabel && (
-            <TreeNodeLabel>
+            <TreeNodeLabel onClick={() => console.log(node)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="14"
