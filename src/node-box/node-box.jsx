@@ -146,13 +146,13 @@ const NodeBox = ({ nodeItem, add }) => {
       </NodeBoxContent>
       {nodeItem.childParentName && (
         <Title onClick={handleAddClick}>{`${nodeItem.childParentName} ${
-          nodeItem.childrenCount ? nodeItem.childrenCount : ""
+          nodeItem.childrenCount ? "(" + nodeItem.childrenCount + ")" : ""
         }`}</Title>
       )}
     </NodeBoxContainer>
   ) : (
     <Title onClick={handleAddClick}>{`${nodeItem.name} ${
-      nodeItem.childrenCount ? nodeItem.childrenCount : ""
+      nodeItem.childrenCount ? "(" + nodeItem.childrenCount + ")" : ""
     }`}</Title>
   );
 };
