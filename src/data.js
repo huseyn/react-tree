@@ -5,6 +5,8 @@ const itemsDriveC = [
     icon: "activefolder",
     isDirectory: true,
     expanded: true,
+    editable: false,
+    childrenCount: 2,
   },
   {
     id: "2",
@@ -14,6 +16,8 @@ const itemsDriveC = [
     icon: "activefolder",
     isDirectory: true,
     expanded: true,
+    editable: false,
+    childrenCount: 2,
   },
   {
     id: "3",
@@ -22,6 +26,7 @@ const itemsDriveC = [
     icon: "file",
     isDirectory: false,
     expanded: true,
+    editable: false,
   },
   {
     id: "4",
@@ -30,6 +35,7 @@ const itemsDriveC = [
     icon: "file",
     isDirectory: false,
     expanded: true,
+    editable: false,
   },
   {
     id: "5",
@@ -39,6 +45,8 @@ const itemsDriveC = [
     icon: "file",
     isDirectory: false,
     expanded: true,
+    editable: false,
+    childrenCount: 3,
   },
   {
     id: "6",
@@ -47,6 +55,7 @@ const itemsDriveC = [
     icon: "file",
     isDirectory: false,
     expanded: true,
+    editable: false,
   },
   {
     id: "7",
@@ -55,6 +64,7 @@ const itemsDriveC = [
     icon: "file",
     isDirectory: false,
     expanded: true,
+    editable: false,
   },
   {
     id: "8",
@@ -63,9 +73,10 @@ const itemsDriveC = [
     icon: "activefolder",
     isDirectory: true,
     expanded: true,
+    editable: false,
   },
 ];
 
-export default function getItemsDriveC() {
+export default function getGoalsList() {
   return itemsDriveC;
 }

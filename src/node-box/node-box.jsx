@@ -74,9 +74,8 @@ const Title = styled.span`
   }
 `;
 
-const NodeBox = ({ nodeItem }) => {
+const NodeBox = ({ nodeItem, add }) => {
   const [value, setValue] = useState("");
-  const [editable, setEditable] = useState(false);
 
   const onValueChange = useCallback((v) => {
     setValue(v);
@@ -85,6 +84,10 @@ const NodeBox = ({ nodeItem }) => {
   const onEnterKey = useCallback(() => {
     console.log(value);
   }, [value]);
+
+  const handleAddClick = useCallback(() => {
+    add(nodeItem.id);
+  }, [add, nodeItem.id]);
 
   return nodeItem.parentId ? (
     <NodeBoxContainer>
@@ -95,23 +98,26 @@ const NodeBox = ({ nodeItem }) => {
           ))}
         </DragIcon>
         <NodeBoxInfo>
-          <TextBox
-            value={value}
-            valueChangeEvent="input"
-            onValueChange={onValueChange}
-            onEnterKey={onEnterKey}
-          />
-          (<span className="box-title">{nodeItem.name}</span>)
+          {nodeItem.editable ? (
+            <TextBox
+              value={value}
+              valueChangeEvent="input"
+              onValueChange={onValueChange}
+              onEnterKey={onEnterKey}
+            />
+          ) : (
+            <span className="box-title">{nodeItem.name}</span>
+          )}
         </NodeBoxInfo>
       </NodeBoxContent>
       {nodeItem.childParentName && (
-        <Title onClick={() => console.log(nodeItem)}>
-          {nodeItem.childParentName}
-        </Title>
+        <Title onClick={handleAddClick}>{`${nodeItem.childParentName} ${
+          nodeItem.childrenCount ? (nodeItem.childrenCount) : ""
+        }`}</Title>
       )}
     </NodeBoxContainer>
   ) : (
-    <Title onClick={() => console.log(nodeItem)}>{nodeItem.name}</Title>
+    <Title onClick={handleAddClick}>{nodeItem.name}</Title>
   );
 };
 

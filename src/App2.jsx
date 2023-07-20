@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import TreeView from "devextreme-react/tree-view";
 import Sortable from "devextreme-react/sortable";
 import NodeBox from "./node-box/node-box.jsx";
 
-import getItemsDriveC from "./data.js";
+import getGoalsList from "./data.js";
 
 const StyledSortable = styled(Sortable)`
   * {
@@ -58,140 +58,177 @@ const StyledSortable = styled(Sortable)`
   }
 `;
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.treeViewDriveCRef = React.createRef();
+const App = () => {
+  const treeViewDriveCRef = useRef(null);
 
-    this.state = {
-      itemsDriveC: getItemsDriveC(),
-    };
+  const [goalsList, setGoalsList] = useState([
+    {
+      id: 1,
+      name: "Goals (2)",
+      icon: "activefolder",
+      isDirectory: true,
+      expanded: true,
+    },
+    {
+      id: 2,
+      parentId: 1,
+      name: "1. Goal",
+      childParentName: "Focus Area (2)",
+      icon: "activefolder",
+      isDirectory: true,
+      expanded: true,
+    },
+    {
+      id: 3,
+      parentId: 2,
+      name: "1.1 Focus Area",
+      icon: "file",
+      isDirectory: false,
+      expanded: true,
+    },
+    {
+      id: 4,
+      parentId: 2,
+      name: "1.2 Focus Area",
+      icon: "file",
+      isDirectory: false,
+      expanded: true,
+    },
+    {
+      id: 5,
+      parentId: 1,
+      name: "2. Goal",
+      childParentName: "Focus Area (3)",
+      icon: "file",
+      isDirectory: false,
+      expanded: true,
+    },
+    {
+      id: 6,
+      parentId: 5,
+      name: "2.1 Focus Area",
+      icon: "file",
+      isDirectory: false,
+      expanded: true,
+    },
+    {
+      id: 7,
+      parentId: 5,
+      name: "2.2 Focus Area",
+      icon: "file",
+      isDirectory: false,
+      expanded: true,
+    },
+    {
+      id: 8,
+      parentId: 5,
+      name: "2.3 Focus Area",
+      icon: "activefolder",
+      isDirectory: true,
+      expanded: true,
+    },
+  ]);
 
-    this.onDragChange = this.onDragChange.bind(this);
-    this.onDragEnd = this.onDragEnd.bind(this);
-  }
+  const addNewNode = useCallback((parentId) => {
+    setGoalsList((prevList) => {
+      const newId = Math.max(...prevList.map((item) => item.id)) + 1;
+      return [
+        {
+          id: newId,
+          parentId,
+          icon: "file",
+          name: "",
+          isDirectory: false,
+          expanded: true,
+          editable: true,
+        },
+        ...prevList,
+      ];
+    });
+  }, []);
 
-  renderTreeViewItem(item) {
-    return <NodeBox nodeItem={item} />;
-  }
+  const renderTreeViewItem = (item) => {
+    return <NodeBox add={addNewNode} nodeItem={item} />;
+  };
 
-  render() {
-    return (
-      <StyledSortable
-        filter=".dx-treeview-item"
-        group="shared"
-        data="driveC"
-        allowDropInsideItem={true}
-        allowReordering={true}
-        onDragChange={this.onDragChange}
-        onDragEnd={this.onDragEnd}
-      >
-        <TreeView
-          id="treeviewDriveC"
-          expandNodesRecursive={false}
-          dataStructure="plain"
-          ref={this.treeViewDriveCRef}
-          items={this.state.itemsDriveC}
-          width={250}
-          height={380}
-          displayExpr="name"
-          itemRender={this.renderTreeViewItem}
-        />
-      </StyledSortable>
-    );
-  }
-  get treeViewDriveC() {
-    return this.treeViewDriveCRef.current.instance;
-  }
-
-  onDragChange(e) {
+  const onDragChange = (e) => {
     if (e.fromComponent === e.toComponent) {
-      const fromNode = this.findNode(this.getTreeView(e.fromData), e.fromIndex);
-      const toNode = this.findNode(
-        this.getTreeView(e.toData),
-        this.calculateToIndex(e)
-      );
-      if (toNode !== null && this.isChildNode(fromNode, toNode)) {
+      const fromNode = findNode(getTreeView(e.fromData), e.fromIndex);
+      const toNode = findNode(getTreeView(e.toData), calculateToIndex(e));
+      if (toNode !== null && isChildNode(fromNode, toNode)) {
         e.cancel = true;
       }
     }
-  }
+  };
 
-  onDragEnd(e) {
+  const onDragEnd = (e) => {
     if (e.fromComponent === e.toComponent && e.fromIndex === e.toIndex) {
       return;
     }
 
-    const fromTreeView = this.getTreeView(e.fromData);
-    const toTreeView = this.getTreeView(e.toData);
+    const fromTreeView = getTreeView(e.fromData);
+    const toTreeView = getTreeView(e.toData);
 
-    const fromNode = this.findNode(fromTreeView, e.fromIndex);
-    const toNode = this.findNode(toTreeView, this.calculateToIndex(e));
+    const fromNode = findNode(fromTreeView, e.fromIndex);
+    const toNode = findNode(toTreeView, calculateToIndex(e));
 
     if (e.dropInsideItem && toNode !== null && !toNode.itemData.isDirectory) {
       return;
     }
 
-    const fromTopVisibleNode = this.getTopVisibleNode(e.fromComponent);
-    const toTopVisibleNode = this.getTopVisibleNode(e.toComponent);
+    const fromTopVisibleNode = getTopVisibleNode(e.fromComponent);
+    const toTopVisibleNode = getTopVisibleNode(e.toComponent);
 
-    const fromItems = this.state[this.getStateFieldName(e.fromData)];
-    const toItems = this.state[this.getStateFieldName(e.toData)];
-    this.moveNode(fromNode, toNode, fromItems, toItems, e.dropInsideItem);
+    const fromItems = [...goalsList];
+    const toItems = [...goalsList];
+    moveNode(fromNode, toNode, fromItems, toItems, e.dropInsideItem);
 
-    this.setState({
-      [this.getStateFieldName(e.fromData)]: [...fromItems],
-      [this.getStateFieldName(e.toData)]: [...toItems],
-    });
+    setGoalsList(fromItems);
+
     fromTreeView.scrollToItem(fromTopVisibleNode);
     toTreeView.scrollToItem(toTopVisibleNode);
-  }
+  };
 
-  getTreeView(driveName) {
-    return driveName === "driveC" ? this.treeViewDriveC : "";
-  }
+  const getTreeView = (driveName) => {
+    return driveName === "driveC" ? treeViewDriveCRef.current?.instance : "";
+  };
 
-  getStateFieldName(driveName) {
-    return driveName === "driveC" ? "itemsDriveC" : "";
-  }
-
-  calculateToIndex(e) {
+  const calculateToIndex = (e) => {
     if (e.fromComponent !== e.toComponent || e.dropInsideItem) {
       return e.toIndex;
     }
-
     return e.fromIndex >= e.toIndex ? e.toIndex : e.toIndex + 1;
-  }
+  };
 
-  findNode(treeView, index) {
+  const findNode = (treeView, index) => {
     const nodeElement = treeView
       .element()
       .querySelectorAll(".dx-treeview-node")[index];
     if (nodeElement) {
-      return this.findNodeById(
+      return findNodeById(
         treeView.getNodes(),
         nodeElement.getAttribute("data-item-id")
       );
     }
     return null;
-  }
+  };
 
-  findNodeById(nodes, id) {
+  const findNodeById = (nodes, id) => {
     for (let i = 0; i < nodes.length; i += 1) {
       if (nodes[i].itemData.id === id) {
         return nodes[i];
       }
       if (nodes[i].children) {
-        const node = this.findNodeById(nodes[i].children, id);
+        const node = findNodeById(nodes[i].children, id);
         if (node != null) {
           return node;
         }
       }
     }
     return null;
-  }
+  };
 
-  moveNode(fromNode, toNode, fromItems, toItems, isDropInsideItem) {
+  const moveNode = (fromNode, toNode, fromItems, toItems, isDropInsideItem) => {
     const fromIndex = fromItems.findIndex(
       (item) => item.id === fromNode.itemData.id
     );
@@ -203,23 +240,23 @@ class App extends React.Component {
         : toItems.findIndex((item) => item.id === toNode.itemData.id);
     toItems.splice(toIndex, 0, fromNode.itemData);
 
-    this.moveChildren(fromNode, fromItems, toItems);
+    moveChildren(fromNode, fromItems, toItems);
     if (isDropInsideItem) {
       fromNode.itemData.parentId = toNode.itemData.id;
     } else {
       fromNode.itemData.parentId =
         toNode != null ? toNode.itemData.parentId : undefined;
     }
-  }
+  };
 
-  moveChildren(node, fromDataSource, toDataSource) {
+  const moveChildren = (node, fromDataSource, toDataSource) => {
     if (!node.itemData.isDirectory) {
       return;
     }
 
     node.children.forEach((child) => {
       if (child.itemData.isDirectory) {
-        this.moveChildren(child, fromDataSource, toDataSource);
+        moveChildren(child, fromDataSource, toDataSource);
       }
 
       const fromIndex = fromDataSource.findIndex(
@@ -228,9 +265,9 @@ class App extends React.Component {
       fromDataSource.splice(fromIndex, 1);
       toDataSource.splice(toDataSource.length, 0, child.itemData);
     });
-  }
+  };
 
-  isChildNode(parentNode, childNode) {
+  const isChildNode = (parentNode, childNode) => {
     let { parent } = childNode;
     while (parent !== null) {
       if (parent.itemData.id === parentNode.itemData.id) {
@@ -239,9 +276,9 @@ class App extends React.Component {
       parent = parent.parent;
     }
     return false;
-  }
+  };
 
-  getTopVisibleNode(component) {
+  const getTopVisibleNode = (component) => {
     const treeViewElement = component.element();
     const treeViewTopPosition = treeViewElement.getBoundingClientRect().top;
     const nodes = treeViewElement.querySelectorAll(".dx-treeview-node");
@@ -251,9 +288,32 @@ class App extends React.Component {
         return nodes[i];
       }
     }
-
     return null;
-  }
-}
+  };
+
+  return (
+    <StyledSortable
+      filter=".dx-treeview-item"
+      group="shared"
+      data="driveC"
+      allowDropInsideItem={true}
+      allowReordering={true}
+      onDragChange={onDragChange}
+      onDragEnd={onDragEnd}
+    >
+      <TreeView
+        id="treeviewDriveC"
+        expandNodesRecursive={false}
+        dataStructure="plain"
+        ref={treeViewDriveCRef}
+        items={goalsList}
+        width={250}
+        height={380}
+        displayExpr="name"
+        itemRender={renderTreeViewItem}
+      />
+    </StyledSortable>
+  );
+};
 
 export default App;
